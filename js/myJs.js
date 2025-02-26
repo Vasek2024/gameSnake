@@ -22,8 +22,8 @@ for(let i = 0; i < excel.length; i++){ // проходим циклом, пок�
     x++
 }
 // 
-function generateSnae() { // выдаёт два случайных значения Х и У
-    let posX = Math.round(Math.random() * (10 - 1) + 1)
+function generateSnae() { // выдаёт два случайных значения Х и У (о 1 до 10)
+    let posX = Math.round(Math.random() * (10 - 3) + 3)
     let posY = Math.round(Math.random() * (10 - 1) + 1)
     return [posX, posY] // возвращаем массив случайных значения Х и У
 }
@@ -33,8 +33,128 @@ let coordinates = generateSnae()
 let snakeBody = [document.querySelector(`[posX = "` + coordinates[0] + `"][posY = "` + coordinates[1] + `"]`),
 document.querySelector(`[posX = "` + (coordinates[0]-1) + `"][posY = "` + coordinates[1] + `"]`),
 document.querySelector(`[posX = "` + (coordinates[0]-2) + `"][posY = "` + coordinates[1] + `"]`)]
-// console.log(snakeBody)
-for(let i = 0; i < snakeBody.length; i++){
-    snakeBody[i].classList.add('snakeBody')
+
+for(let i = 0; i < snakeBody.length; i++){ // циклом проходим по длинне тела змеи
+    snakeBody[i].classList.add('snakeBody') // задаём класс для тела
 }
-snakeBody[0].classList.add('head')
+snakeBody[0].classList.add('head') // задаём класс для головы
+
+let mouse
+function createMouse() {
+    function generateMouse() { // выдаёт два случайных значения Х и У (о 1 до 10)
+        let posX = Math.round(Math.random() * (10 - 3) + 3)
+        let posY = Math.round(Math.random() * (10 - 1) + 1)
+        return [posX, posY] // возвращаем массив случайных значения Х и У
+    }
+let mouseCoordinates = generateMouse()
+// ищим блок с указаннымс координатами для яблока
+mouse = document.querySelector(`[posX = "` + mouseCoordinates[0] + `"][posY = "` + mouseCoordinates[1] + `"]`)
+// если яблоко попадает на тело (класс) змеи, вызываем функцию изменения координат этого яблока
+// для того что бы яблоко не попадало на тело змеи 
+while (mouse.classList.contains('snakeBody')) { // если координата имеет класс snakeBody
+    let mouseCoordinates = generateMouse()
+// ищим блок с указаннымс координатами для яблока
+mouse = document.querySelector(`[posX = "` + mouseCoordinates[0] + `"][posY = "` + mouseCoordinates[1] + `"]`)
+}
+mouse.classList.add('mouse') // задаём класс для яблока
+// console.log(mouseCoordinates)
+}
+
+createMouse()
+
+let direction = 'right'
+
+// функция движения змеи
+function move() {
+    // находим координаты головы (по индексу 0)
+    let snakeCoordinates = [snakeBody[0].getAttribute('posX'), snakeBody[0].getAttribute('posY')]
+    snakeBody[0].classList.remove('head') // удаляем класс головы змеи
+    snakeBody[snakeBody.length-1].classList.remove('snakeBody') // удаляем класс у последнего (хвостового) элемента змеи
+    snakeBody.pop() // удаляет из массива последний элемент и возвращает значение удалённого элемента
+
+    // условия движения змеи (меняем значения координат по оси Х (лево, право) и по оси У (верх, низ))
+if(direction == 'right'){
+    // учим змею выходить с левого края блока
+    if(snakeCoordinates[0] < 10){ // если у головы координата меньше 10 (не дошла до края блока), то
+        snakeBody.unshift(document.querySelector(`[posX = "` + (+snakeCoordinates[0]+1) + `"][posY = "` + snakeCoordinates[1] + `"]`))
+    } else { // если у головы координата 10 (упёрлась в стену блока), то posX = "1"
+        // тем голова начинает двигаться опять с первой координаты по линии Х 
+    snakeBody.unshift(document.querySelector(`[posX = "1"][posY = "` + snakeCoordinates[1] + `"]`))
+    }
+} else if(direction == 'left'){ // если змея движется с левого края, то
+    // учим змею выходить с правого края блока
+    if(snakeCoordinates[0] > 1){ // если у головы координата больше 1 (не дошла до края блока), то
+        snakeBody.unshift(document.querySelector(`[posX = "` + (+snakeCoordinates[0]-1) + `"][posY = "` + snakeCoordinates[1] + `"]`))
+    } else { // если у головы координата 1 (упёрлась в левую стену блока), то posX = "10"
+        // тем голова начинает двигаться опять с последней координаты по линии Х 
+    snakeBody.unshift(document.querySelector(`[posX = "10"][posY = "` + snakeCoordinates[1] + `"]`))
+    }
+} else if(direction == 'up'){ // если змея движется с вниз, то
+    // учим змею выходить с верхнего края блока
+    if(snakeCoordinates[1] < 10){ // если у головы координата меньше 10 (не дошла до края блока), то
+        snakeBody.unshift(document.querySelector(`[posX = "` + snakeCoordinates[0] + `"][posY = "` + (+snakeCoordinates[1]+1) + `"]`))
+    } else { // если у головы координата 10 (упёрлась в нижнюю стену блока), то posУ = "1"
+        // тем голова начинает двигаться опять с первой координаты по линии У 
+    snakeBody.unshift(document.querySelector(`[posX = "` + snakeCoordinates[0] + `"][posY = "1"]`))
+    }
+}  else if(direction == 'down'){
+    if(snakeCoordinates[1] > 1){
+        snakeBody.unshift(document.querySelector(`[posX = "` + snakeCoordinates[0] + `"][posY = "` + (snakeCoordinates[1]-1) + `"]`))
+    } else {
+    snakeBody.unshift(document.querySelector(`[posX = "` + snakeCoordinates[0] + `"][posY = "10"]`))
+    }
+}
+
+// если координаты змеи и яблока совпадают (по оси Х и У), то
+if(snakeBody[0].getAttribute('posX') == mouse.getAttribute('posX') && snakeBody[0].getAttribute('posY') == mouse.getAttribute('posY')){
+    mouse.classList.remove('mouse') // удаляем класс
+    let a = snakeBody[snakeBody.length-1].getAttribute('posX')
+    let b = snakeBody[snakeBody.length-1].getAttribute('posY')
+    // добавляем элемент в конец массива и возвращает новую длину массива
+    snakeBody.push(document.querySelector(`[posX = "` + a + `"][posY = "` + b + `"]`))
+    createMouse()
+}
+
+
+
+
+
+
+
+// если у головы появится класс который присвоен телу, это значит змея воткнулась в своё тело
+if(snakeBody[0].classList.contains('snakeBody')){
+setTimeout(() => {
+  alert("Игра окончина!")  
+}, 200)
+    clearInterval(interval)// останавливаем (чистим) функцию движения змеи
+    snakeBody[0].style.background ='red'// задаём красный стиль голове змии
+}
+
+    snakeBody[0].classList.add('head') // снова задём класс головы змеи
+    for(let i = 0; i < snakeBody.length; i++){ // циклом проходим по длинне тела змеи
+        snakeBody[i].classList.add('snakeBody') // задаём класс для тела
+    }
+}
+
+
+
+
+
+
+// задаём интервал вызова функции движения змеи в 0.5 сек
+let interval = setInterval(move, 500)
+
+// отслеживаем событие нажатия клавиш управления
+window.addEventListener('keydown', function(e){
+if(e.keyCode == 37 && direction != 'right'){ // влево и запрещаем движение в противоположную сторону
+    // то есть если дижется влево, то при нажатии кнопки назад ничего не произойёт
+direction = 'left'
+} else if(e.keyCode == 38 && direction != 'down'){ // вверх и запрещаем движение в противоположную сторону
+direction = 'up'
+} else if(e.keyCode == 39 && direction != 'left'){ // вправо и запрещаем движение в противоположную сторону
+direction = 'right'
+} else if(e.keyCode == 40 && direction != 'up'){ // вниз и запрещаем движение в противоположную сторону
+direction = 'down'
+}
+})
+// 

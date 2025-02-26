@@ -19,14 +19,19 @@ body{
 }
 
 .snakeBody{
-    background: #ee0a0a;
-    color: #ee0a0a;
+    background: #1b17f0;
+    /* color: #ee0a0a; */
     background-size: cover;
     border-radius: 50%;
 }
 .head{
-    background: #5cf105;
-    color: #5cf105;
+    background: #059af1;
+    /* color: #5cf105; */
     background-size: cover;
     border-radius: 10%;
+}
+.mouse{
+    background: #04f504;
+    /* color: #5cf105; */
+    background-size: cover;
 }
