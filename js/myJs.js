@@ -1,3 +1,20 @@
+let input = document.createElement('input') // создаём поле для очков
+document.body.appendChild(input) // добавляем в body
+// задаём стили полю
+input.style.cssText = ` 
+    margin: auto;
+    margin-bottom: 40px;
+    font-size: 16px;
+    display: block;`
+
+let button = document.createElement('button') // создаём кнопку
+    button.setAttribute('type', 'button')
+    button.classList.add('btn')
+    button.textContent = 'Начать игру'
+
+let score = 0 // переменная для подсчёта очкров
+input.value = `Ваши очки: ${score}` // результат очков
+
 let fild = document.createElement('div')// создаём основной элемент div (поле)
 document.body.appendChild(fild)//  добавляем его в конец блока body
 fild.classList.add('field')// задаём ему класс(вкорором прописаны стили)
@@ -29,15 +46,17 @@ function generateSnae() { // выдаёт два случайных значен
 }
 
 let coordinates = generateSnae()
-// находим три div с указанными координатами Х и У (тело змеи)
-let snakeBody = [document.querySelector(`[posX = "` + coordinates[0] + `"][posY = "` + coordinates[1] + `"]`),
-document.querySelector(`[posX = "` + (coordinates[0]-1) + `"][posY = "` + coordinates[1] + `"]`),
-document.querySelector(`[posX = "` + (coordinates[0]-2) + `"][posY = "` + coordinates[1] + `"]`)]
+
+// находим два div с указанными координатами Х и У (тело змеи)
+let snakeBody = [document.querySelector(`[posX = "5"][posY = "5"]`),
+document.querySelector(`[posX = "4"][posY = "5"]`)]
+// let snakeBody = [document.querySelector(`[posX = "` + coordinates[0] + `"][posY = "` + coordinates[1] + `"]`),
+// document.querySelector(`[posX = "` + (coordinates[0]-1) + `"][posY = "` + coordinates[1] + `"]`)]
 
 for(let i = 0; i < snakeBody.length; i++){ // циклом проходим по длинне тела змеи
     snakeBody[i].classList.add('snakeBody') // задаём класс для тела
 }
-snakeBody[0].classList.add('head') // задаём класс для головы
+snakeBody[0].classList.add('head') // задаём класс для головы (индекс 0)
 
 let mouse
 function createMouse() {
@@ -63,6 +82,7 @@ mouse.classList.add('mouse') // задаём класс для яблока
 createMouse()
 
 let direction = 'right'
+let steps = false
 
 // функция движения змеи
 function move() {
@@ -113,48 +133,60 @@ if(snakeBody[0].getAttribute('posX') == mouse.getAttribute('posX') && snakeBody[
     // добавляем элемент в конец массива и возвращает новую длину массива
     snakeBody.push(document.querySelector(`[posX = "` + a + `"][posY = "` + b + `"]`))
     createMouse()
+    score++ // подсчёт очков
+    input.value = `Ваши очки: ${score}` // результат очков
 }
-
-
-
-
-
-
 
 // если у головы появится класс который присвоен телу, это значит змея воткнулась в своё тело
 if(snakeBody[0].classList.contains('snakeBody')){
-setTimeout(() => {
-  alert("Игра окончина!")  
-}, 200)
+// setTimeout(() => {
+//   alert("Игра окончина!")  
+// }, 200)
+document.body.appendChild(button) // добавляем кнопку
     clearInterval(interval)// останавливаем (чистим) функцию движения змеи
     snakeBody[0].style.background ='red'// задаём красный стиль голове змии
 }
-
     snakeBody[0].classList.add('head') // снова задём класс головы змеи
     for(let i = 0; i < snakeBody.length; i++){ // циклом проходим по длинне тела змеи
         snakeBody[i].classList.add('snakeBody') // задаём класс для тела
     }
+    steps = true
 }
 
 
-
-
-
-
+let interval = ''
+// 
+let body = document.querySelector('body') // при клике по экрану () запускается игра
+body.addEventListener('click', function() {
 // задаём интервал вызова функции движения змеи в 0.5 сек
-let interval = setInterval(move, 500)
+interval = setInterval(move, 500)
+})
+// let interval = setInterval(move, 500)
+
+
+
+
+
+
 
 // отслеживаем событие нажатия клавиш управления
 window.addEventListener('keydown', function(e){
-if(e.keyCode == 37 && direction != 'right'){ // влево и запрещаем движение в противоположную сторону
-    // то есть если дижется влево, то при нажатии кнопки назад ничего не произойёт
-direction = 'left'
-} else if(e.keyCode == 38 && direction != 'down'){ // вверх и запрещаем движение в противоположную сторону
-direction = 'up'
-} else if(e.keyCode == 39 && direction != 'left'){ // вправо и запрещаем движение в противоположную сторону
-direction = 'right'
-} else if(e.keyCode == 40 && direction != 'up'){ // вниз и запрещаем движение в противоположную сторону
-direction = 'down'
+    if(steps == true){ // пока змейка не сделает один ход, кнопки реагировать не будут
+        // для того чтоб небыло двух нажатий кнопки в один ход змейки
+        if(e.keyCode == 37 && direction != 'right'){ // влево и запрещаем движение в противоположную сторону
+            // то есть если дижется влево, то при нажатии кнопки назад ничего не произойёт
+            direction = 'left'
+            steps = false
+        } else if(e.keyCode == 38 && direction != 'down'){ // вверх и запрещаем движение в противоположную сторону
+            direction = 'up'
+            steps = false
+        } else if(e.keyCode == 39 && direction != 'left'){ // вправо и запрещаем движение в противоположную сторону
+            direction = 'right'
+            steps = false
+        } else if(e.keyCode == 40 && direction != 'up'){ // вниз и запрещаем движение в противоположную сторону
+            direction = 'down'
+            steps = false
+}
 }
 })
 // 
