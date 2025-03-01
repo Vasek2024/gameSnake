@@ -149,6 +149,10 @@ function move() {
         createMouse();
         score++; // подсчёт очков
         input.value = `Ваши очки: ${score}`; // результат очков
+
+        window.localStorage.setItem('scoreRecords', score); // переменная для рекорда сохраняем
+        let scoreRecord = window.localStorage.getItem('scoreRecords')// выводим
+        inputRecord.value = `Ваши рекорд: ${scoreRecord}`;
     }
 
     // если у головы появится класс который присвоен телу, это значит змея воткнулась в своё тело
@@ -170,21 +174,34 @@ function move() {
     steps = true;
 }
 
-
-
-
-
-
-
 let body = document.querySelector('body'); // при клике по экрану () запускается игра
 body.addEventListener('click', function () {
-    if (!start) {
-        start = true;
-        direction = 'right';
-        steps = true;
-        clearInterval(interval);
-        interval = setInterval(move, 500);
+    start = true;
+    direction = 'right';
+    steps = true;
+    clearInterval(interval);
+
+    // Очищаем поле от змейки и еды
+    document.querySelectorAll('.snakeBody').forEach(el => el.classList.remove('snakeBody'));
+    document.querySelectorAll('.mouse').forEach(el => el.classList.remove('mouse'));
+    document.querySelector('.head')?.classList.remove('head');
+
+    // Сбрасываем счетчик
+    score = 0;
+    input.value = `Ваши очки: ${score}`;
+
+    // Пересоздаём змею
+    snakeBody = [
+        document.querySelector(`[posX = "5"][posY = "5"]`),
+        document.querySelector(`[posX = "4"][posY = "5"]`)
+    ];
+    snakeBody[0].classList.add('head');
+    for (let i = 0; i < snakeBody.length; i++) {
+        snakeBody[i].classList.add('snakeBody');
     }
+
+    createMouse(); // Создаём новую еду
+    interval = setInterval(move, 500); // Запускаем игру заново
 });
 
 button.addEventListener('click', function () {
@@ -215,17 +232,6 @@ button.addEventListener('click', function () {
     createMouse(); // Создаём новую еду
     interval = setInterval(move, 500); // Запускаем игру заново
 });
-
-
-
-
-
-
-
-
-
-
-
 
 
 // отслеживаем событие нажатия клавиш управления
