@@ -202,56 +202,6 @@ body.addEventListener('click', function () {
     steps = true;
     clearInterval(interval);
 
-
-
-    mouse = document.querySelectorAll('.mouse')
-    head = document.querySelector('.head')
-    snakeBody = document.querySelectorAll('.snakeBody')
-
-
-
-    // let i = 0;
-    // do {
-    //     snakeBody.classList.add('Ничего не добавляет')
-    //     snakeBody.classList.remove('Ничего не удаляет')
-    //   i++;
-    // } while (i < 3);
-
-
-
-    while (snakeBody.length) {
-        console.log(snakeBody)
-        console.log(mouse)
-        console.log(head)
-        snakeBody.classList.add('Ничего не добавляет')
-        snakeBody.classList.remove('Ничего не удаляет')
-        mouse.classList.remove('mouse')
-        head.classList.remove('head')
-      }
-
-
-
-    // Очищаем поле от змейки и еды
-    
-// console.log(snakeBody)
-    // document.querySelectorAll('.snakeBody').forEach(el => el.classList.remove('snakeBody'));
-    // document.querySelectorAll('.mouse').forEach(el => el.classList.remove('mouse'));
-    // document.querySelector('.head')?.classList.remove('head');
-
-    // // Сбрасываем счетчик
-    // score = 0;
-    // input.value = `Ваши очки: ${score}`;
-
-    // // Пересоздаём змею
-    // snakeBody = [
-    //     document.querySelector(`[posX = "5"][posY = "5"]`),
-    //     document.querySelector(`[posX = "4"][posY = "5"]`)
-    // ];
-    // snakeBody[0].classList.add('head');
-    // for (let i = 0; i < snakeBody.length; i++) {
-    //     snakeBody[i].classList.add('snakeBody');
-    // }
-
     resetGam() // Удоляем и создаём змею
 
     createMouse(); // Создаём новую еду
